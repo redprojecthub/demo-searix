@@ -61,6 +61,52 @@ document.querySelectorAll('.section').forEach(section => {
     observer.observe(section);
 });
 
+// Counter animation for stats
+const originalValues = {};
+document.querySelectorAll('.stat-value').forEach(counter => {
+    originalValues[counter] = counter.textContent;
+});
+
+const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            if (!entry.target.dataset.animated) {
+                animateCounters();
+                entry.target.dataset.animated = 'true';
+            }
+        } else {
+            // Reset counters to 0 when out of view
+            const counters = document.querySelectorAll('.stat-value');
+            counters.forEach(counter => {
+                counter.textContent = '0';
+            });
+            delete entry.target.dataset.animated;
+        }
+    });
+}, { threshold: 0.5 });
+
+const statsSection = document.querySelector('.stats');
+if (statsSection) {
+    statsObserver.observe(statsSection);
+}
+
+function animateCounters() {
+    const counters = document.querySelectorAll('.stat-value');
+    counters.forEach(counter => {
+        const target = parseInt(originalValues[counter].replace(/,/g, ''));
+        let current = 0;
+        const increment = target / 100; // Adjust speed here
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            counter.textContent = Math.floor(current).toLocaleString();
+        }, 20); // Adjust interval for speed
+    });
+}
+
 // Add fade-in class to CSS for animation
 document.head.insertAdjacentHTML('beforeend', `
 <style>

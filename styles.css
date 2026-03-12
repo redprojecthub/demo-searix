@@ -557,7 +557,7 @@ body {
 .stat-value {
   font-family: 'Inter', sans-serif;
   font-weight: 700;
-  font-size: var(--size-sm);
+  font-size: var(--size-lg);
   color: var(--white);
   margin: 0;
 }
